@@ -17,7 +17,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Tao Deng',
     author_email='taodeng@link.cuhk.edu.cn',
-    # url='https://github.com/ToryDeng/scGeneClust',
+    url='https://github.com/ToryDeng/FeatureSelectionBenchmarks',
     license='GPL v3',
     classifiers=[
         "Programming Language :: Python :: 3",
