@@ -58,8 +58,8 @@ Other software features are:
 | FEAST       | R        | [paper](https://doi.org/10.1093/bib/bbab034) |
 | sctransform | R        | [paper](https://doi.org/10.1186/s13059-019-1874-1) |
 
-
 #### Cell clustering
+
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
 | Seurat | R       | [paper](https://doi.org/10.1016/j.cell.2021.04.048) |
@@ -68,27 +68,30 @@ Other software features are:
 | CIDR | R       | [paper](https://doi.org/10.1186/s13059-017-1188-0) |
 | SC3s | Python  | [paper](https://doi.org/10.1186/s12859-022-05085-z) |
 
-
 ### spatial transcriptomics
+
 #### Feature selection
+
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
 | SpatialDE |Python| [paper](https://doi.org/10.1038/nmeth.4636v) |
 | SPARK-X   |   R  | [paper](https://doi.org/10.1186/s13059-021-02404-0) |
 
-
 #### domain detetcion
+
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
 | SpaGCN | Python  | [paper](https://doi.org/10.1038/s41592-021-01255-8) |
 | stLearn | Python  | [paper](https://doi.org/10.1101/2020.05.31.125658) |
 
-
 ## Requirements
+
 ### R packages
+
 This benchmark is written in Python and call R functions through `rpy2`. If you want to use some methods implemented with R language, please install the corresponding R packages.
 
 ### Python packages
+
 - anndata>=0.8.0
 - numpy>=1.21.6
 - scanpy>=1.9.1
@@ -109,7 +112,13 @@ This benchmark is written in Python and call R functions through `rpy2`. If you 
 - SpatialDE>=1.1.3
 
 ## Installation
-Coming soon.
+```commandline
+git clone https://github.com/ToryDeng/FeatureSelectionBenchmarks
+cd FeatureSelectionBenchmarks/
+python3 setup.py install --user
+```
 
 ## Tutorial
+
 Coming soon.
+
