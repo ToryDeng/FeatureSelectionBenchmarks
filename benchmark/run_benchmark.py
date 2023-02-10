@@ -6,15 +6,18 @@
 import os
 from typing import List, Dict, Union, Literal, Callable, Optional
 
+from loguru import logger
+from scGeneClust._utils import set_logger
+
 from ._metrics import compute_clustering_metrics
 from ._recorder import create_records, write_records, store_metrics_to_records
 from ._utils import rm_cache
 from .cluster import generally_cluster_obs
 from .dataset import load_data
 from .selection import generally_select_features
-from scGeneClust._utils import set_logger
 
 
+@logger.catch
 def run_bench(
         data_cfg: Dict[str, Dict[str, Union[os.PathLike, str, List, Dict[str, Union[List, str]]]]],
         fs_cfg: Dict[Union[str, Callable], Union[List[int], List[Literal['auto']]]],

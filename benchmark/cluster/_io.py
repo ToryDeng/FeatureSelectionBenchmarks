@@ -9,7 +9,6 @@ import numpy as np
 from loguru import logger
 
 
-@logger.catch
 def write_clusters_as_cache(clusters: np.ndarray, data_name: str, fs_method: str, n_genes: int, cl_method: str, run: int):
     clusters_dir = f"./cache/clustering_result/{data_name}/{fs_method}/{n_genes}/{cl_method}/"
     if not os.path.exists(clusters_dir):
@@ -18,7 +17,6 @@ def write_clusters_as_cache(clusters: np.ndarray, data_name: str, fs_method: str
     logger.opt(colors=True).info(f"<magenta>{cl_method}</magenta> clustering results have been cached.")
 
 
-@logger.catch
 def read_clusters_from_cache(data_name: str, fs_method: str, n_genes: int, cl_method: str, run: int):
     clusters_dir = f"./cache/clustering_result/{data_name}/{fs_method}/{n_genes}/{cl_method}/{run}.npy"
     if os.path.exists(clusters_dir):

@@ -3,7 +3,6 @@
 # @Author : Tory Deng
 # @File : functions.py
 # @Software: PyCharm
-import os
 from typing import Union, Literal, Optional
 
 import SpatialDE

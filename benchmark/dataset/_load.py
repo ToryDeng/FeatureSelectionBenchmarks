@@ -18,7 +18,6 @@ from ._preprocess import make_unique, prefilter_special_genes, clean_var_names, 
 from .._utils import console
 
 
-@logger.catch
 def _load_adata(data_name: str, data_props: Dict[str, Union[os.PathLike, str]], modality: Literal['scrna', 'spatial'], preprocess: bool = True,):
     logger.info("Reading adata...")
     adata = read_adata_from_cache(data_name)
@@ -67,7 +66,6 @@ def _load_adata(data_name: str, data_props: Dict[str, Union[os.PathLike, str]], 
         return adata
 
 
-@logger.catch
 def load_data(data_name: str, data_props: Dict[str, Union[os.PathLike, str]], modality: Literal['scrna', 'spatial'], preprocess: bool = True,):
     console.rule('[bold red]' + data_name)
     adata = _load_adata(data_name, data_props, modality, preprocess)

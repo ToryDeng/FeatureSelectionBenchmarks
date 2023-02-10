@@ -9,7 +9,6 @@ import numpy as np
 from loguru import logger
 
 
-@logger.catch
 def write_genes_as_cache(genes: np.ndarray, data_name: str, fs_method: str):
     genes_dir = f"./cache/selected_genes/{data_name}/{fs_method}/"
     if not os.path.exists(genes_dir):
@@ -18,7 +17,6 @@ def write_genes_as_cache(genes: np.ndarray, data_name: str, fs_method: str):
     logger.info("Selected genes have been cached.")
 
 
-@logger.catch
 def read_genes_from_cache(data_name: str, fs_method: str, n_genes: int):
     genes_path = f"./cache/selected_genes/{data_name}/{fs_method}/{n_genes}.npy"
     if os.path.exists(genes_path):

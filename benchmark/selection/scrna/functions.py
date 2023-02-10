@@ -72,7 +72,6 @@ def select_in_single_batch(
     return select_features_from_df(selected_genes_df, n_selected_features)
 
 
-@logger.catch
 def select_features(
         adata: ad.AnnData,
         method: str,

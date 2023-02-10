@@ -11,7 +11,6 @@ import numpy as np
 from loguru import logger
 
 
-@logger.catch
 def clean_var_names(adata: ad.AnnData):
     adata.var['original_name'] = adata.var_names
     logger.debug("The original variable names have been saved to `adata.var['original_name']`.")
@@ -21,7 +20,6 @@ def clean_var_names(adata: ad.AnnData):
     adata.var_names = vreplace(gene_names)
 
 
-@logger.catch
 def make_unique(adata: ad.AnnData):
     if adata.obs_names.has_duplicates:
         logger.debug("Observation names have duplicates. Making them unique...")
@@ -32,7 +30,6 @@ def make_unique(adata: ad.AnnData):
     logger.info("Observation names and Variables names are all unique now.")
 
 
-@logger.catch
 def clean_annotations(adata: ad.AnnData, annot_key: str, to_remove: Optional[List],
                       to_replace: Optional[Dict[str, str]]):
     # remove specified annotation types
@@ -48,8 +45,6 @@ def clean_annotations(adata: ad.AnnData, annot_key: str, to_remove: Optional[Lis
                 logger.opt(colors=True).debug(f"Replaced <yellow>{n_to_replace}</yellow> annotations with '{replaced}'.")
 
 
-
-@logger.catch
 def prefilter_special_genes(adata: ad.AnnData, Gene1Pattern: str = "ERCC", Gene2Pattern: str = "MT-"):
     drop_pattern1 = adata.var_names.str.startswith(Gene1Pattern)
     drop_pattern2 = adata.var_names.str.startswith(Gene2Pattern)

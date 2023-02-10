@@ -4,7 +4,7 @@ This is the code repository of the feature (gene) selection benchmark in both sc
 
 ## Software features
 
-After a simple configuration, you can run the benchmark (including data loading, quality control, feature selection, and cell clustering/domain detection) in one single line of code:
+After a simple configuration, you can run the benchmark (including data loading, quality control, feature selection, and cell clustering/domain detection) in **one single line of code**:
 
 ```python
 from benchmark.run_benchmark import run_bench
@@ -120,6 +120,8 @@ python3 setup.py install --user
 ```
 
 ## Tutorial
+- The tutorial about how to run the benchmarks: [tutorials/run_benchmarks.ipynb](https://github.com/ToryDeng/FeatureSelectionBenchmarks/blob/main/tutorials/run_benchmarks.ipynb)
+- The tutorial about how to read the records: [tutorials/read_records.ipynb](https://github.com/ToryDeng/FeatureSelectionBenchmarks/blob/main/tutorials/read_records.ipynb)
 
-Coming soon.
+
 

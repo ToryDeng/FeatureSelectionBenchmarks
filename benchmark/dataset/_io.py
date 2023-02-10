@@ -13,7 +13,6 @@ from loguru import logger
 from ._utils import is_normalized, to_dense
 
 
-@logger.catch
 def read_h5ad(path: Union[os.PathLike, str], use_raw: bool = True) -> ad.AnnData:
     adata = sc.read_h5ad(path)
     if use_raw and adata.raw is not None:
@@ -27,7 +26,6 @@ def read_h5ad(path: Union[os.PathLike, str], use_raw: bool = True) -> ad.AnnData
     return adata
 
 
-@logger.catch
 def write_adata_as_cache(adata:ad.AnnData, data_name: str):
     if not os.path.exists("./cache/h5ad/"):
         os.makedirs("./cache/h5ad/")
@@ -35,7 +33,6 @@ def write_adata_as_cache(adata:ad.AnnData, data_name: str):
     logger.debug(f"adata has been written to ./cache/h5ad/{data_name}.h5ad")
 
 
-@logger.catch
 def read_adata_from_cache(data_name: str):
     if os.path.exists(f"./cache/h5ad/{data_name}.h5ad"):
         adata = read_h5ad(f"./cache/h5ad/{data_name}.h5ad", use_raw=False)
