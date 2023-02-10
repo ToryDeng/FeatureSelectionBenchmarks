@@ -63,7 +63,7 @@ def SPARKX(adata: ad.AnnData) -> pd.DataFrame:
         raw_adata = adata.raw.to_adata()
         pandas2ri.activate()
         spark = importr("SPARK")
-        stats, res_stest, res_mtest = spark.sparkx(raw_adata.X.T, raw_adata.obsm['spatial'], numCores=os.cpu_count()-1, verbose=False)
+        stats, res_stest, res_mtest = spark.sparkx(raw_adata.X.T, raw_adata.obsm['spatial'], verbose=False)
         pandas2ri.deactivate()
         results = pandas2ri.rpy2py(res_mtest).sort_values('adjustedPval')
         return pd.DataFrame({'Gene': raw_adata.var_names, 'Importance': results['adjustedPval']})

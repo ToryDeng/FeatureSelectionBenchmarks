@@ -35,7 +35,6 @@ def spaGCN_clustering(
         adata: ad.AnnData,
         img: np.ndarray,
         k: int,
-        # shape: Literal['hexagon', 'square'] = 'hexagon',
         random_state: int = 0
 ):
     # prepare positional information

@@ -30,7 +30,7 @@ def test_scrna_benchmark():
         'to_remove': [np.nan, 'Megakaryocytes']
     }}
     fs_cfg = {'seurat_v3': [1000, 2000], random_select: [500], 'GeneClust-ps': ['auto']}
-    cl_cfg = {'KMeans': 2}
+    cl_cfg = {'KMeans': 2,  random_clustering: 1}
 
     run_bench(data_cfg, fs_cfg, cl_cfg, ['ARI', 'NMI'], 'scrna', clean_cache=True, fs_kwarg={'seed': 123}, cl_kwarg={'k':5, 'seed': 123})
     rm_cache("./cache")

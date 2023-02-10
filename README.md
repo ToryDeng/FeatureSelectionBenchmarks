@@ -24,10 +24,10 @@ cl_cfg = {'clustering_method': 2}
 run_bench(data_cfg, fs_cfg, cl_cfg, modality='scrna', metrics=['ARI', 'NMI'])
 ```
 
-The evaluation results will be automatically saved as an XLSX file:
+The evaluation results will be automatically saved as an XLSX file in the working directory:
 
 ```text
-2023-02 23:12:47 scrna.xlsx
+2023-02 14_54_32 scrna.xlsx
 ```
 
 Other software features are:
@@ -45,6 +45,7 @@ Other software features are:
 
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
+| GeneClust | Python | [paper](https://doi.org/10.1093/bib/bbad042)
 | vst   | Python   | [paper](https://doi.org/10.1016/j.cell.2019.05.031) |
 | mvp   | Python   | [paper](https://www.nature.com/articles/nbt.3192) |
 | triku | Python   | [paper](https://doi.org/10.1093/gigascience/giac017) |
@@ -62,14 +63,14 @@ Other software features are:
 
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
+| SC3s | Python  | [paper](https://doi.org/10.1186/s12859-022-05085-z) |
 | Seurat | R       | [paper](https://doi.org/10.1016/j.cell.2021.04.048) |
 | SHARP  | R       | [paper](http://www.genome.org/cgi/doi/10.1101/gr.254557.119) |
 | TSCAN | R       | [paper](https://doi.org/10.1093/nar/gkw430) |
 | CIDR | R       | [paper](https://doi.org/10.1186/s13059-017-1188-0) |
-| SC3s | Python  | [paper](https://doi.org/10.1186/s12859-022-05085-z) |
+
 
 ### spatial transcriptomics
-
 #### Feature selection
 
 | Name  | Language | Reference |

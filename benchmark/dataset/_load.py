@@ -83,4 +83,5 @@ def load_data(data_name: str, data_props: Dict[str, Union[os.PathLike, str]], mo
     else:
         if 'image_path' in data_props.keys():
             logger.warning("The image will not be loaded when using scRNA-seq data.")
+        return adata, None
 

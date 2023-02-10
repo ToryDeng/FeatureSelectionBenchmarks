@@ -12,6 +12,7 @@ from ._utils import rm_cache
 from .cluster import generally_cluster_obs
 from .dataset import load_data
 from .selection import generally_select_features
+from scGeneClust._utils import set_logger
 
 
 def run_bench(
@@ -61,7 +62,8 @@ def run_bench(
         function. The benchmark will call the function like `custom_fs_function(adata, n_selected_genes, **kwargs)`,
         and the return values must be an ndarray that contains features selected by the function. You can write a
         wrapper function to work around incompatible parameters/return values.
-        - list_of_numbers_of_selected_genes: a list of numbers of genes needed to be selected.
+        - list_of_numbers_of_selected_genes: a list of numbers of genes needed to be selected. If the function
+        internally determines the number of selected genes (e.g. GeneClust), write the list as `['auto']`.
 
     cl_cfg
         Configurations of downstream cell clustering/domain detection methods. It should be a dict in the format
@@ -94,6 +96,7 @@ def run_bench(
     -------
     None
     """
+    set_logger()
     if cl_kwarg is None:
         cl_kwarg = dict()
     if fs_kwarg is None:

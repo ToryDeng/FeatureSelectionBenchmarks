@@ -56,7 +56,7 @@ def store_metrics_to_records(
 
 
 def write_records(records: Dict[str, pd.DataFrame], modality: Literal['scrna', 'spatial']):
-    record_name = f"{datetime.now().strftime('%Y-%m %H:%M:%S')} {modality}"
+    record_name = f"{datetime.now().strftime('%Y-%m %H_%M_%S')} {modality}"
     writer = pd.ExcelWriter(f'{record_name}.xlsx')
     for metric, record in records.items():
         record.to_excel(writer, sheet_name=metric, index=True)

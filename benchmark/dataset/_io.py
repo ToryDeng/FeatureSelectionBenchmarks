@@ -10,7 +10,7 @@ import anndata as ad
 import scanpy as sc
 from loguru import logger
 
-from benchmark.dataset._utils import is_normalized, to_dense
+from ._utils import is_normalized, to_dense
 
 
 @logger.catch
