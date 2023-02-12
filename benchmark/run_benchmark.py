@@ -44,7 +44,10 @@ def run_bench(
         Configurations of datasets. It should be a dict in the format `{'data_name': {'property_name': data_property}}`.
         Supported property names are:
 
-        - 'adata_path': path to the `h5ad` file.
+        - 'adata_path': path to the `h5ad` file. The raw counts should be  stored in `adata.X`. The benchmark will do
+        quality control and  normalization automatically when `preprocess=True`. If you want to use datasets processed
+        by yourself, please set `preprocess=False`. In this case the normalized counts and raw data should be stored in
+        `adata.X` and `adata.raw` respectively.
         - 'image_path': path to the `h5ad` file, optional. It will be ignored when `modality='scrna'`.
         - 'annot_key' : a key in `adata.obs` that represents annotations (cell types/domains).
         - 'to_replace': replace some values in `adata.obs['annot_key']`, optional. It should be a dict in the format
