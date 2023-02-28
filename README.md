@@ -70,15 +70,16 @@ Other software features are:
 | CIDR | R       | [paper](https://doi.org/10.1186/s13059-017-1188-0) |
 
 
-### spatial transcriptomics
+### Spatial transcriptomics
 #### Feature selection
 
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
 | SpatialDE |Python| [paper](https://doi.org/10.1038/nmeth.4636v) |
 | SPARK-X   |   R  | [paper](https://doi.org/10.1186/s13059-021-02404-0) |
+| Giotto    |   R  | [paper](https://doi.org/10.1186/s13059-021-02286-2)
 
-#### domain detetcion
+#### Domain detetcion
 
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
@@ -89,7 +90,7 @@ Other software features are:
 
 ### R packages
 
-This benchmark is written in Python and call R functions through `rpy2`. If you want to use some methods implemented with R language, please install the corresponding R packages.
+This benchmark is written in Python and calls R functions through `rpy2`. If you want to use some methods implemented with R language, please install the corresponding R packages.
 
 ### Python packages
 

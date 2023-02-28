@@ -7,8 +7,10 @@ from typing import Union, Callable, Literal, Optional
 
 import anndata as ad
 import numpy as np
+from loguru import logger
 
 from ._io import read_genes_from_cache, write_genes_as_cache
+from ._utils import all_genes_in_adata
 from .scrna.functions import select_features as scrna_select
 from .spatial.functions import select_features as spatial_select
 from .._utils import console
@@ -29,7 +31,7 @@ def generally_select_features(
         selected_genes = read_genes_from_cache(adata.uns['data_name'], fs_method, n_selected_genes)
         if selected_genes is None:
             if modality == 'scrna':
-                selected_genes = scrna_select(adata, fs_method, n_selected_genes, random_state)
+                selected_genes = scrna_select(adata, fs_method, n_selected_genes)
             else:
                 selected_genes = spatial_select(adata, img, fs_method, n_selected_genes, random_state)
             write_genes_as_cache(selected_genes, adata.uns['data_name'], fs_method)
@@ -42,4 +44,7 @@ def generally_select_features(
             write_genes_as_cache(selected_genes, adata.uns['data_name'], fs_method.__name__)
     else:
         raise NotImplementedError(f"`fs_method` should be an valid string or a function, got {type(fs_method)}.")
-    return selected_genes
+    # check whether all genes are in data
+    if all_genes_in_adata(adata, selected_genes):
+        logger.info(f"Feature selection finished.")
+        return selected_genes

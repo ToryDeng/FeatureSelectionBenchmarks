@@ -3,18 +3,22 @@
 # @Author : Tory Deng
 # @File : functions.py
 # @Software: PyCharm
+from multiprocessing import Process
+from pathlib import Path
 from typing import Union, Literal, Optional
 
 import SpatialDE
 import anndata as ad
+import anndata2ri
 import numpy as np
 import pandas as pd
 import scGeneClust as gc
 from loguru import logger
-from rpy2.robjects import pandas2ri
+from rpy2.robjects import pandas2ri, r, globalenv
 from rpy2.robjects.packages import importr
 
-from .._utils import HiddenPrints, select_features_from_df, all_genes_in_adata
+from .._utils import HiddenPrints, select_features_from_df, rename_df_columns
+from ..scrna.functions import SCRNASEQ_METHODS
 
 
 def select_features(
@@ -32,13 +36,17 @@ def select_features(
         selected_genes_df = spatialDE(adata)
     elif method == 'SPARKX':
         selected_genes_df = SPARKX(adata)
+    elif method == 'binspect_kmeans':
+        selected_genes_df = BinSpect_kmeans(adata)
+    elif method == 'binspect_rank':
+        selected_genes_df = BinSpect_rank(adata)
+    elif method in SCRNASEQ_METHODS.keys():
+        selected_genes_df = SCRNASEQ_METHODS[method](adata)
     else:
         raise NotImplementedError(f"No implementation of {method}.")
 
-    selected_genes = select_features_from_df(selected_genes_df, n_selected_features)
-    if all_genes_in_adata(adata, selected_genes):
-        logger.info(f"Feature selection finished.")
-        return selected_genes
+    rename_df_columns(selected_genes_df)
+    return select_features_from_df(selected_genes_df, n_selected_features)
 
 
 def GeneClust_ps(adata: ad.AnnData, img: Optional[np.ndarray], random_state: int) -> pd.DataFrame:
@@ -54,7 +62,7 @@ def spatialDE(adata: ad.AnnData) -> pd.DataFrame:
         counts = raw_adata.to_df()
         coord = pd.DataFrame(raw_adata.obsm['spatial'], columns=['y_coord', 'x_coord'], index=raw_adata.obs_names)
         results = SpatialDE.run(coord, counts).sort_values('qval')
-        return pd.DataFrame({'Gene': raw_adata.var_names, 'Importance': results['qval']})
+        return pd.DataFrame({'Gene': raw_adata.var_names, 'Importance': 1 - results['qval']})
 
 
 def SPARKX(adata: ad.AnnData) -> pd.DataFrame:
@@ -65,4 +73,66 @@ def SPARKX(adata: ad.AnnData) -> pd.DataFrame:
         stats, res_stest, res_mtest = spark.sparkx(raw_adata.X.T, raw_adata.obsm['spatial'], verbose=False)
         pandas2ri.deactivate()
         results = pandas2ri.rpy2py(res_mtest).sort_values('adjustedPval')
-        return pd.DataFrame({'Gene': raw_adata.var_names, 'Importance': results['adjustedPval']})
+        return pd.DataFrame({'Gene': raw_adata.var_names, 'Importance': 1 - results['adjustedPval']})
+
+
+def Giotto_save_rds(adata: ad.AnnData):
+    RDS_PATH = Path("./cache/temp")
+    RDS_PATH.mkdir(parents=True, exist_ok=True)
+    with HiddenPrints():
+        anndata2ri.activate()
+        importr("Giotto")
+        globalenv['spe'] = adata
+        r("""
+        gobj = createGiottoObject(
+        expression = assay(spe, 'X'),
+        spatial_locs = reducedDim(spe, 'spatial'),
+        cell_metadata = colData(spe),
+        feat_metadata = rowData(spe),
+        )
+        saveRDS(gobj, './cache/temp/giotto_obj.rds')
+        """)
+        anndata2ri.deactivate()
+
+
+def BinSpect_kmeans(adata: ad.AnnData) -> pd.DataFrame:
+    raw_adata = adata.raw.to_adata()
+
+    p = Process(target=Giotto_save_rds, args=(raw_adata,))
+    p.start()
+    p.join()
+    with HiddenPrints():
+        anndata2ri.activate()
+        importr("Giotto")
+        r("""
+        gobj <- readRDS('./cache/temp/giotto_obj.rds')
+    
+        gobj <- normalizeGiotto(gobject = gobj, verbose = F)
+        gobj <- createSpatialNetwork(gobject = gobj)
+        """)
+        result = r("binSpect(gobj, bin_method='kmeans', kmeans_algo = 'kmeans_arma_subset')")
+        anndata2ri.deactivate()
+    return pd.DataFrame({'Gene': result['feats'], 'Importance': 1 - result['adj.p.value']})
+
+
+def BinSpect_rank(adata: ad.AnnData) -> pd.DataFrame:
+    raw_adata = adata.raw.to_adata()
+
+    p = Process(target=Giotto_save_rds, args=(raw_adata,))
+    p.start()
+    p.join()
+    with HiddenPrints():
+        anndata2ri.activate()
+        importr("Giotto")
+        r("""
+        gobj <- readRDS('./cache/temp/giotto_obj.rds')
+    
+        gobj <- normalizeGiotto(gobject = gobj, verbose = F)
+        gobj <- createSpatialNetwork(gobject = gobj)
+        """)
+        result = r("binSpect(gobj, bin_method='rank')")
+        anndata2ri.deactivate()
+    return pd.DataFrame({'Gene': result['feats'], 'Importance': 1 - result['adj.p.value']})
+
+
+

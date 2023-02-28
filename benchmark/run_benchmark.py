@@ -69,7 +69,8 @@ def run_bench(
         and the return values must be an ndarray that contains features selected by the function. You can write a
         wrapper function to work around incompatible parameters/return values.
         - list_of_numbers_of_selected_genes: a list of numbers of genes needed to be selected. If the function
-        internally determines the number of selected genes (e.g. GeneClust), write the list as `['auto']`.
+        internally determines the number of selected genes (e.g. GeneClust and no feature selection), write the list
+        as `['auto']`.
 
     cl_cfg
         Configurations of downstream cell clustering/domain detection methods. It should be a dict in the format

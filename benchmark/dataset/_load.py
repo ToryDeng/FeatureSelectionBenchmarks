@@ -54,8 +54,10 @@ def _load_adata(data_name: str, data_props: Dict[str, Union[os.PathLike, str]], 
             # store data name
             adata.uns['data_name'] = data_name
             # store annot_key and batch_key
-            adata.uns['annot_key'] = None if 'annot_key' not in data_props.keys() else data_props['annot_key']
-            adata.uns['batch_key'] = None if 'batch_key' not in data_props.keys() else data_props['batch_key']
+            if 'annot_key' in data_props.keys():
+                adata.uns['annot_key'] = data_props['annot_key']
+            if 'batch_key' in data_props.keys():
+                adata.uns['batch_key'] = data_props['batch_key']
             # store the spot shape for spatial transcriptomics
             if 'shape' in data_props.keys():
                 adata.uns['shape'] = data_props['shape']

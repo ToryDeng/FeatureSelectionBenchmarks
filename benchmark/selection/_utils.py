@@ -4,6 +4,7 @@
 # @File : _utils.py
 # @Software: PyCharm
 import traceback
+from typing import Union, Literal
 
 import anndata as ad
 import anndata2ri
@@ -26,7 +27,19 @@ def rpy2_wrapper(func):
     return wrapper
 
 
-def select_features_from_df(selected_genes_df: pd.DataFrame, n_selected_features: int):
+def rename_df_columns(selected_genes_df: pd.DataFrame):
+    # rename the dataframe
+    if selected_genes_df.shape[1] == 1:  # doesn't have importances, only genes
+        selected_genes_df.rename(columns={selected_genes_df.columns[0]: 'Gene'}, inplace=True)
+    elif selected_genes_df.shape[1] == 2:  # genes, importances
+        col_names = selected_genes_df.columns
+        selected_genes_df.rename(columns={col_names[0]: 'Gene', col_names[1]: 'Importance'}, inplace=True)
+        selected_genes_df.sort_values(by='Importance', ascending=False, inplace=True)  # in descending order
+    else:
+        raise ValueError(f"Founded more than 2 columns in results: {selected_genes_df.columns}")
+
+
+def select_features_from_df(selected_genes_df: pd.DataFrame, n_selected_features: Union[int, Literal['auto']]):
     if n_selected_features == 'auto':
         return selected_genes_df['Gene'].values
     else:
