@@ -6,18 +6,20 @@
 import contextlib
 import os
 import random
+from pathlib import Path
 
+import STAGATE_pyG
 import SpaGCN as spg
 import anndata as ad
 import numpy as np
+import scanpy as sc
 import torch
+from loguru import logger
 
 from ..._utils import HiddenPrints
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 import stlearn as st
-from pathlib import Path
-from loguru import logger
 
 
 def cluster_spots(adata: ad.AnnData, image: np.ndarray, method: str, k: int, random_state: int = 0):
@@ -27,6 +29,8 @@ def cluster_spots(adata: ad.AnnData, image: np.ndarray, method: str, k: int, ran
         return spaGCN_clustering(adata, image, k, random_state=random_state)
     elif method == 'stlearn':
         return stlearn_clustering(adata, k, random_state=random_state)
+    elif method == 'STAGATE':
+        return STAGATE_clustering(adata, k, random_state=random_state)
     else:
         raise NotImplementedError(f"{method} has not been implemented.")
 
@@ -46,7 +50,7 @@ def spaGCN_clustering(
             adj = spg.calculate_adj_matrix(x=x_pixel, y=y_pixel, histology=False)
         else:
             adj = spg.calculate_adj_matrix(
-                x=x_pixel, y=y_pixel, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=49, alpha=1, histology=True
+                x=x_array, y=y_array, x_pixel=x_pixel, y_pixel=y_pixel, image=img, beta=49, alpha=1, histology=True
             )
         l = spg.search_l(0.5, adj, start=0.01, end=1000, tol=0.01, max_run=100)
         res = spg.search_res(adata, adj, l, k, start=0.7, step=0.1, tol=5e-3, lr=0.05, max_epochs=20,
@@ -56,7 +60,7 @@ def spaGCN_clustering(
         random.seed(random_state)
         torch.manual_seed(random_state)
         np.random.seed(random_state)
-        clf.train(adata, adj, init_spa=True, init="louvain", res=res, tol=5e-3, lr=0.05, max_epochs=200)
+        clf.train(adata, adj, init_spa=True, init="louvain", res=res, tol=5e-3, lr=0.05, max_epochs=500)
         y_pred, prob = clf.predict()
         shape = adata.uns['shape'] if 'shape' in adata.uns else 'hexagon'
         return np.array(spg.spatial_domains_refinement_ez_mode(adata.obs.index, y_pred, x_array, y_array, shape))
@@ -70,7 +74,8 @@ def stlearn_clustering(adata: ad.AnnData, k: int, random_state: int = 0):
         copied_adata = adata.copy()
         library_id = list(copied_adata.uns["spatial"].keys())[0]
         copied_adata.uns["spatial"][library_id]["use_quality"] = 'hires'
-        copied_adata.obs['imagerow'], copied_adata.obs['imagecol'] = copied_adata.obs['array_row'], copied_adata.obs['array_col']
+        copied_adata.obs['imagerow'], copied_adata.obs['imagecol'] = copied_adata.obs['array_row'], copied_adata.obs[
+            'array_col']
 
         st.em.run_pca(copied_adata, random_state=random_state, use_highly_variable=False)
         st.pp.tiling(copied_adata, TILE_PATH)
@@ -82,3 +87,14 @@ def stlearn_clustering(adata: ad.AnnData, k: int, random_state: int = 0):
         st.tl.clustering.kmeans(copied_adata, n_clusters=k, use_data="X_pca", key_added="X_pca_kmeans")
 
         return copied_adata.obs['X_pca_kmeans'].values
+
+
+def STAGATE_clustering(adata: ad.AnnData, k: int, random_state: int = 0):
+    STAGATE_pyG.Cal_Spatial_Net(adata, rad_cutoff=150)
+    STAGATE_pyG.Stats_Spatial_Net(adata)
+    adata = STAGATE_pyG.train_STAGATE(adata, device=torch.device('cpu'), random_seed=random_state)
+
+    sc.pp.neighbors(adata, use_rep='STAGATE', random_state=random_state)
+    sc.tl.umap(adata, random_state=random_state)
+    adata = STAGATE_pyG.mclust_R(adata, used_obsm='STAGATE', num_cluster=k, random_seed=random_state)
+    return adata.obs['mclust'].values

@@ -6,7 +6,7 @@
 import os
 import shutil
 import sys
-from typing import Union
+from typing import Union, Literal, Optional
 
 from loguru import logger
 from rich.console import Console
@@ -37,4 +37,35 @@ def rm_cache(path: Union[os.PathLike, str]):
         logger.info(f"{path} has been deleted.")
     else:
         logger.warning(f"{path} not found. Skip deleting the directory.")
+
+
+def set_logger(verbosity: Literal[0, 1, 2] = 1, log_path: Optional[Union[os.PathLike, str]] = None):
+    """
+    Set the verbosity level.
+
+    Parameters
+    ----------
+    verbosity
+        0: only print warnings and errors
+        1: also print info
+        2: also print debug messages
+    log_path
+        Path to the log file
+    """
+    def formatter(record: dict):
+        if record['level'].name in ('DEBUG', 'INFO'):
+            return "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | " \
+                   "<level>{level: <5}</level> | " \
+                   "<level>{message}\n</level>"
+        else:
+            return "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | " \
+                   "<level>{level: <8}</level> | " \
+                   "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}\n</level>"
+
+    level_dict = {0: 'WARNING', 1: 'INFO', 2: 'DEBUG'}
+    logger.remove()
+    if log_path:
+        logger.add(log_path, encoding='utf-8')
+    else:
+        logger.add(sys.stdout, colorize=True, level=level_dict[verbosity], format=formatter)
 

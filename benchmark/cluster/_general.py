@@ -20,6 +20,7 @@ def generally_cluster_obs(
         fs_method: Union[str, Callable],
         n_selected_genes: Union[int, Literal['auto']],
         cl_method: Union[str, Callable],
+        random_state: int,
         run: int,
         modality: Literal['scrna', 'spatial'],
         **kwargs
@@ -31,9 +32,9 @@ def generally_cluster_obs(
         if cluster_labels is None:
             n_clusters = (~pd.isna(fs_adata.obs[fs_adata.uns['annot_key']].unique())).sum()
             if modality == 'scrna':
-                cluster_labels = cluster_cells(fs_adata, cl_method, n_clusters, random_state=run)
+                cluster_labels = cluster_cells(fs_adata, cl_method, n_clusters, random_state=random_state+run)
             else:
-                cluster_labels = cluster_spots(fs_adata, img, cl_method, n_clusters, random_state=run)
+                cluster_labels = cluster_spots(fs_adata, img, cl_method, n_clusters, random_state=random_state+run)
             write_clusters_as_cache(cluster_labels, fs_adata.uns['data_name'], fs_method, n_selected_genes, cl_method, run)
     elif callable(cl_method):  # cl_method is a function
         cluster_labels = read_clusters_from_cache(fs_adata.uns['data_name'], fs_method, n_selected_genes, cl_method.__name__, run)

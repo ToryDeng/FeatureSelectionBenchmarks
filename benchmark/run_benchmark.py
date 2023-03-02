@@ -7,11 +7,10 @@ import os
 from typing import List, Dict, Union, Literal, Callable, Optional
 
 from loguru import logger
-from scGeneClust._utils import set_logger
 
 from ._metrics import compute_clustering_metrics
 from ._recorder import create_records, write_records, store_metrics_to_records
-from ._utils import rm_cache
+from ._utils import rm_cache, set_logger
 from .cluster import generally_cluster_obs
 from .dataset import load_data
 from .selection import generally_select_features
@@ -28,6 +27,8 @@ def run_bench(
         cl_kwarg: Optional[Dict] = None,
         preprocess: bool = True,
         clean_cache: bool = False,
+        verbosity: Literal[0, 1, 2] = 2,
+        log_path: Optional[Union[os.PathLike, str]] = None,
         random_state: int = 0
 ):
     """
@@ -96,6 +97,12 @@ def run_bench(
     clean_cache
         Whether to clean all cached information, including the preprocessed data, selected genes and
         generated cluster labels stored in `./cache` folder.
+    verbosity
+        0: only print warnings and errors
+        1: also print info
+        2: also print debug messages
+    log_path
+        Path to the log file.
     random_state
         Change to use different initial states for the optimization.
 
@@ -103,7 +110,7 @@ def run_bench(
     -------
     None
     """
-    set_logger()
+    set_logger(verbosity, log_path)
     if cl_kwarg is None:
         cl_kwarg = dict()
     if fs_kwarg is None:
@@ -122,7 +129,7 @@ def run_bench(
 
                 for cl_method, n_runs in cl_cfg.items():
                     for run in range(n_runs):
-                        cluster_labels = generally_cluster_obs(fs_adata, img, fs_method, n_selected_genes, cl_method, run, modality, **cl_kwarg)
+                        cluster_labels = generally_cluster_obs(fs_adata, img, fs_method, n_selected_genes, cl_method, random_state, run, modality, **cl_kwarg)
                         for metric in metrics:
                             value = compute_clustering_metrics(fs_adata.obs[fs_adata.uns['annot_key']], cluster_labels, metric)
                             store_metrics_to_records(records, metric, value, data_name, cl_method, run, fs_method, n_selected_genes)

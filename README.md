@@ -24,7 +24,7 @@ cl_cfg = {'clustering_method': 2}
 run_bench(data_cfg, fs_cfg, cl_cfg, modality='scrna', metrics=['ARI', 'NMI'])
 ```
 
-The evaluation results will be automatically saved as an XLSX file in the working directory:
+The evaluation results will be automatically saved as an XLSX file in the working directory with name like this:
 
 ```text
 2023-02 14_54_32 scrna.xlsx
@@ -35,7 +35,7 @@ Other software features are:
 - Automatically save the results of each step (preprocessed data, selected features, and cluster labels)
 - Reload the cached genes and cluster labels when you use the same data (specified by the data name)
 - Support custom feature selection and cell clustering/domain detection methods
-- Present detailed and pretty logging messages based on [rich](https://github.com/Textualize/rich) and [loguru](https://github.com/Delgan/loguru)
+- Present detailed and pretty logging messages based on [rich](https://github.com/Textualize/rich) and [loguru](https://github.com/Delgan/loguru) (see examples in tutorial)
 
 ## Currently supported methods
 
@@ -79,12 +79,13 @@ Other software features are:
 | SPARK-X   |   R  | [paper](https://doi.org/10.1186/s13059-021-02404-0) |
 | Giotto    |   R  | [paper](https://doi.org/10.1186/s13059-021-02286-2)
 
-#### Domain detetcion
+#### Domain detection
 
 | Name  | Language | Reference |
 | :---: | :---:    | :---:     |
 | SpaGCN | Python  | [paper](https://doi.org/10.1038/s41592-021-01255-8) |
 | stLearn | Python  | [paper](https://doi.org/10.1101/2020.05.31.125658) |
+| STAGATE | Python  | [paper](https://doi.org/10.1038/s41467-022-29439-6) |
 
 ## Requirements
 
@@ -96,11 +97,13 @@ This benchmark is written in Python and calls R functions through `rpy2`. If you
 
 - anndata>=0.8.0
 - numpy>=1.21.6
-- scanpy>=1.9.1
-- loguru>=0.6.0
+- setuptools>=59.5.0
 - anndata2ri>=1.1
 - sc3s>=0.1.1
+- scanpy>=1.9.1
+- loguru>=0.6.0
 - rpy2>=3.5.6
+- sklearn>=0.0.post2
 - scikit-learn>=1.2.0
 - SpaGCN>=1.2.5
 - torch>=1.13.1
@@ -112,6 +115,7 @@ This benchmark is written in Python and calls R functions through `rpy2`. If you
 - triku>=2.1.4
 - statsmodels>=0.13.5
 - SpatialDE>=1.1.3
+- STAGATE_pyG>=1.0.0
 
 ## Installation
 ```commandline

@@ -43,14 +43,17 @@ def SHARP_clustering(adata: ad.AnnData, k: int, random_seed: int):
     Parameters
     ----------
     adata : ad.AnnData
-      AnnData object containing raw counts and cell types
+        AnnData object containing raw counts and cell types
+    k : int
+        Number of clusters
     random_seed: int
-      An integer for reproducibility
+        An integer for reproducibility
+
 
     Returns
     -------
     result : np.ndarray
-      cluster labels
+        cluster labels
     """
     with HiddenPrints():
         anndata2ri.activate()
@@ -70,14 +73,14 @@ def Seurat_v4_clustering(adata: ad.AnnData, random_seed: int):
     Parameters
     ----------
     adata : ad.AnnData
-      AnnData object containing raw counts and cell types
+        AnnData object containing raw counts and cell types
     random_seed: int
-      An integer for reproducibility
+        An integer for reproducibility
 
     Returns
     -------
     result : np.ndarray
-      cluster labels
+        cluster labels
     """
     assert adata.raw is not None, "The raw counts in data must exist!"
     raw_adata = adata.raw.to_adata()
@@ -112,13 +115,16 @@ def SC3s_clustering(adata: ad.AnnData, k: int, random_seed: int):
     Parameters
     ----------
     adata : ad.AnnData
-      AnnData object containing normalized data and cell types
+        AnnData object containing normalized data and cell types
+    k : int
+        Number of clusters
     random_seed: int
-      An integer for reproducibility
+        An integer for reproducibility
+
     Returns
     -------
     result : np.ndarray
-      cluster labels
+        cluster labels
     """
     with HiddenPrints():
         if 'X_pca' in adata.obsm:

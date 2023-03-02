@@ -133,6 +133,3 @@ def BinSpect_rank(adata: ad.AnnData) -> pd.DataFrame:
         result = r("binSpect(gobj, bin_method='rank')")
         anndata2ri.deactivate()
     return pd.DataFrame({'Gene': result['feats'], 'Importance': 1 - result['adj.p.value']})
-
-
-

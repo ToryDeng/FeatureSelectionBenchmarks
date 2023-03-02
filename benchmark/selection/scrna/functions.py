@@ -26,35 +26,8 @@ def select_in_single_batch(
         method: str,
         n_selected_features: Union[int, Literal['auto']],
 ) -> np.ndarray:
-    if method == 'GeneClust-fast':
-        selected_genes_df = GeneClust_fast(adata)
-    elif method == 'GeneClust-ps':
-        selected_genes_df = GeneClust_ps(adata)
-    elif method == 'seurat':
-        selected_genes_df = seurat_compute_importance(adata)
-    elif method == 'seurat_v3':
-        selected_genes_df = seurat_v3_compute_importance(adata)
-    elif method == 'triku':
-        selected_genes_df = triku_compute_importance(adata)
-    elif method == 'no_fs':
-        selected_genes_df = no_fs_compute_importance(adata)
-    elif method == 'giniclust3':
-        selected_genes_df = giniclust3_compute_importance(adata)
-    elif method == 'sc3':
-        selected_genes_df = sc3_compute_importance(adata)
-    elif method == 'feast':
-        selected_genes_df = FEAST(adata)
-    elif method == 'm3drop':
-        selected_genes_df = M3Drop_compute_importance(adata)
-    elif method == 'scmap':
-        selected_genes_df = scmap_compute_importance(adata)
-    elif method == 'deviance':
-        selected_genes_df = deviance_compute_importance(adata)
-    elif method == 'scran':
-        selected_genes_df = scran(adata)
-    elif method == 'sct':
-        selected_genes_df = sctransform_compute_importance(adata)
-    # If updating this function, also update the dict at the bottom!
+    if method in SCRNASEQ_METHODS.keys():
+        selected_genes_df = SCRNASEQ_METHODS[method](adata)
     else:
         raise NotImplementedError(f"No implementation of {method}.")
 
